@@ -126,3 +126,34 @@ Complétez les sections suivantes avant de rendre le projet.
 ### Axes d'amélioration
 
 > Donnez 3 axes d'amélioration de votre code si vous aviez 1 jour de plus.
+
+## Objectif du test
+
+Ce test vise à évaluer votre capacité à concevoir et implémenter une application full-stack en conditions proches de la production.
+
+Nous portons une attention particulière à :
+- la qualité du code
+- la structuration
+- la gestion des cas réels (edge cases)
+- la réflexion autour de la performance et du passage à l’échelle
+
+## Workflow attendu
+
+1. Fork du repository
+2. Créer une branche dédiée (ex: feature/telemetry)
+3. Développer sur cette branche
+4. Ouvrir une Pull Request vers main
+
+Les push directs sur main sont bloqués
+
+La qualité des commits et du workflow Git fait partie de l’évaluation
+
+
+## Attendus importants
+
+- L’API doit rester performante (<200ms sur 10k+ événements)
+- Les données invalides doivent être traitées proprement (validation ou signalement)
+- Une structuration claire du code est attendue (pas de code monolithique)
+- Le projet n’a pas besoin d’être complet : la qualité prime sur l’exhaustivité
+
+Il est tout à fait acceptable de ne pas tout terminer. Nous privilégions la qualité, la clarté des choix techniques et la capacité d’analyse.
