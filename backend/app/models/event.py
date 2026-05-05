@@ -1,6 +1,5 @@
 from datetime import datetime
-from typing import Any
-from pydantic import BaseModel, ConfigDict, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict
 
 KNOWN_STATUSES = {"flying", "landing", "idle", "takeoff"}
 
@@ -18,8 +17,6 @@ class EventOut(BaseModel):
 
 
 class EventRaw(BaseModel):
-    """Used internally when reading rows from SQLite — validates and flags anomalies."""
-
     model_config = ConfigDict(from_attributes=True)
 
     id: int
@@ -28,27 +25,12 @@ class EventRaw(BaseModel):
     battery: int
     timestamp: datetime
 
-    @field_validator("battery", mode="before")
-    @classmethod
-    def battery_range(cls, v: Any) -> int:
-        val = int(v)
-        if val < 0 or val > 100:
-            # We don't raise here — we tag the anomaly in model_validator
-            pass
-        return val
-
-    @model_validator(mode="after")
-    def flag_anomalies(self) -> "EventRaw":
-        reasons = []
+    def to_out(self) -> EventOut:
+        reasons: list[str] = []
         if self.battery < 0 or self.battery > 100:
             reasons.append(f"battery out of range ({self.battery})")
         if self.status not in KNOWN_STATUSES:
             reasons.append(f"unknown status '{self.status}'")
-        self._anomaly_reasons = reasons
-        return self
-
-    def to_out(self) -> EventOut:
-        reasons = getattr(self, "_anomaly_reasons", [])
         return EventOut(
             id=self.id,
             device=self.device,

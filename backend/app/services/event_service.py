@@ -1,9 +1,6 @@
 from typing import Literal
-from fastapi import HTTPException
 from app.models.event import EventListResponse, EventRaw, StatsOut, ByStatusEntry
 from app.repositories import event_repo
-
-MAX_LIMIT = 100
 
 
 async def search_events(
@@ -13,14 +10,6 @@ async def search_events(
     offset: int,
     sort: Literal["asc", "desc"],
 ) -> EventListResponse:
-    if limit < 1 or limit > MAX_LIMIT:
-        raise HTTPException(
-            status_code=422,
-            detail=f"limit must be between 1 and {MAX_LIMIT}",
-        )
-    if offset < 0:
-        raise HTTPException(status_code=422, detail="offset must be >= 0")
-
     rows, total = await event_repo.fetch_events(
         device=device,
         status=status,
@@ -29,7 +18,6 @@ async def search_events(
         sort=sort,
     )
 
-    # Validate each row through Pydantic — flags anomalies without crashing
     parsed = [EventRaw.model_validate(r).to_out() for r in rows]
     anomaly_count = sum(1 for e in parsed if e.is_anomaly)
 
