@@ -16,7 +16,7 @@ interface UseEventsResult {
   refresh: () => void;
 }
 
-export function useEvents(filters: FiltersState): UseEventsResult {
+export function useEvents(filters: FiltersState, externalTick = 0): UseEventsResult {
   const [data, setData] = useState<EventListResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +64,7 @@ export function useEvents(filters: FiltersState): UseEventsResult {
       clearTimeout(debounceId);
       controller.abort();
     };
-  }, [filters, page, sort, tick]);
+  }, [filters, page, sort, tick, externalTick]);
 
   return { data, loading, error, page, sort, setPage, setSort, refresh };
 }

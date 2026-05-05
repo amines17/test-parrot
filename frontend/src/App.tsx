@@ -36,16 +36,10 @@ export default function App() {
     sort,
     setPage,
     setSort,
-    refresh: refreshEvents,
-  } = useEvents(filters);
+  } = useEvents(filters, globalTick);
 
   const { data: statsData, chartData, loading: statsLoading, error: statsError } =
     useStats(globalTick);
-
-  // Propagate global tick to events too
-  useEffect(() => {
-    refreshEvents();
-  }, [globalTick]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSortToggle = useCallback(() => {
     setSort(sort === "desc" ? "asc" : "desc");

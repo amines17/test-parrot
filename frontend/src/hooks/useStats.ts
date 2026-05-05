@@ -19,13 +19,9 @@ export function useStats(tick: number): UseStatsResult {
   const [data, setData] = useState<StatsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [internalTick, setInternalTick] = useState(tick);
+  const [refreshTick, setRefreshTick] = useState(0);
 
-  useEffect(() => {
-    setInternalTick(tick);
-  }, [tick]);
-
-  const refresh = useCallback(() => setInternalTick((t) => t + 1), []);
+  const refresh = useCallback(() => setRefreshTick((t) => t + 1), []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -46,7 +42,7 @@ export function useStats(tick: number): UseStatsResult {
     })();
 
     return () => controller.abort();
-  }, [internalTick]);
+  }, [tick, refreshTick]);
 
   const chartData = useMemo<ChartEntry[]>(
     () =>
